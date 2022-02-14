@@ -12,10 +12,23 @@ import android.support.annotation.Nullable;
 
 import java.net.URI;
 
+/*
+  Provider cung cấp truy cập tới Database , thực hiện thay đổi trên Database , với user tương tác trên UI cần thông qua
+   Content Resolve ( lớp con để thao tác vơi Content Provider ) và Cursor Loader để gửi yêu cầu UI đến Content Resolve .
+
+   COntent Provider giúp nhiều ứng dụng có thể truy xuất dữ liệu , giống như 1 sever vậy
+
+
+   Tom lai tu Cursor Loader có thể truy xuất dữ liệu đến Content Provider . Activity -> Cursor Loader -> Content Resolver ->
+   Content Provider -> Storage
+
+
+  Cần các Uri cho Content Provider .UriMactcher để xử lí khi Content Provider cần respond cho nhiều URIs khác nhau
+ */
 public class Provider extends ContentProvider {
 
-    // creating two paths for us to insert query, delete data whether we delete/update/insert in whole table or we do it row by row
-    //watch carefully
+
+
     public static final int CONTACTS = 100;
     public static final int CONTACTS_ID = 101;
     public static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -34,11 +47,13 @@ public class Provider extends ContentProvider {
         return true;
     }
 
+
+    /* Cursor trả về kết quả câu truy vấn */
     @Override
     public Cursor query(Uri uri,  String[] projection, String selection,   String[] selectionArgs,   String sortOrder) {
-       // because we are querying means we are reading only from database
+       /* Để truy vấn cần đọc từ db */
         SQLiteDatabase database  = mDbhelper.getReadableDatabase();
-        // intilaizing cursor
+
         Cursor cursor;
 
         int match = sUriMatcher.match(uri);

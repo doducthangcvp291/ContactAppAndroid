@@ -34,6 +34,7 @@ import android.widget.Toast;
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     EditText mNameEditText, mNumberEditText, mEmailEditText;
+    ImageView mCall , mMessage , mEmail ;
     private Uri mPhotoUri;
     private Uri mCurrentContactUri;
     private String mType = Contract.ContactEntry.TYPEOFCONTACT_PERSONAL;
@@ -50,7 +51,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
     };
 
-    boolean hasAllRequiredValues = false;
+    boolean hasAllRequiredValues = false; /* yêu cầu tất cả thông tin khi thêm mới contact*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         Intent intent = getIntent();
         mCurrentContactUri = intent.getData();
-
+        mCall = findViewById(R.id.call);
+        mMessage = findViewById(R.id.message);
+        mEmail = findViewById(R.id.email);
         mNameEditText = findViewById(R.id.nameEditText);
         mNumberEditText = findViewById(R.id.phoneEditText);
         mEmailEditText = findViewById(R.id.emailEditText);
@@ -74,7 +77,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         } else {
             setTitle("Edit a Contact");
-            getLoaderManager().initLoader(LOADER, null, this);
+            getLoaderManager().initLoader(LOADER, null, this); /**/
 
         }
 
@@ -87,8 +90,29 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trySelector();
+                trySelector();/*Ham để lấy ảnh trong máy*/
                 mContactHasChanged = true;
+            }
+        });
+
+        mCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makePhoneCall();
+            }
+        });
+
+        mMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeSendMessage();
+            }
+        });
+
+        mEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeSendEmail();
             }
         });
 
@@ -96,6 +120,38 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
 
     }
+
+    private void makePhoneCall(){
+        String numbercall = mNumberEditText.getText().toString();
+        Intent intentcall = new Intent();
+        intentcall.setAction(Intent.ACTION_CALL);
+        intentcall.setData(Uri.parse("tel:"+numbercall));/*numbercall_ số tương ứng để gọi */
+        startActivity(intentcall);
+    }
+
+    private void makeSendMessage(){
+        String numberms = mNumberEditText.getText().toString();
+        Intent intentms = new Intent();
+        intentms.setAction(Intent.ACTION_SENDTO);
+        intentms.putExtra("sms_body","Xin chào . Đây là báo cáo tiến độ Project 1 ....");
+        intentms.setData(Uri.parse("sms:"+numberms));
+        startActivity(intentms);
+
+    }
+
+    private void makeSendEmail(){
+        String[] numberemail = {mEmailEditText.getText().toString()};
+        Intent intentemail = new Intent();
+        intentemail.setAction(Intent.ACTION_SENDTO);
+        intentemail.setData(Uri.parse("mailto:"));
+        intentemail.putExtra(Intent.EXTRA_EMAIL,numberemail);
+        intentemail.putExtra(Intent.EXTRA_SUBJECT,"Báo cáo tiến độ Project 1");
+        intentemail.putExtra(Intent.EXTRA_TEXT,"Xin chao ....");
+
+        startActivity(intentemail);
+    }
+
+    /*Spinner - chọn loại : Home-Personal-Work*/
 
     private void setUpSpinner() {
 
@@ -126,8 +182,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             }
         });
     }
-
+    /* Ho trợ chọn ảnh*/
     public void trySelector() {
+        /* Hỏi user được truyền truy cập vào ảnh */
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -165,7 +222,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 mPhotoUri = data.getData();
-                mPhoto.setImageURI(mPhotoUri);
+                mPhoto.setImageURI(mPhotoUri);/* set photo */
                 mPhoto.invalidate();
             }
         }
@@ -182,7 +239,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // because we want to hide delete option when we are adding a new contact
+        // Ẩn đi delete trong menu khi đang thêm mới contact ( khi data contact =null , tức chưa có j )
         super.onPrepareOptionsMenu(menu);
         if (mCurrentContactUri == null) {
             MenuItem item = (MenuItem) menu.findItem(R.id.delete);
@@ -190,9 +247,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
         return true;
     }
-
+    /*Which item selected - hàm xử lí khi được click  */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {/* hàm xử lí Các chức năng menu */
 
         switch (item.getItemId()) {
 
@@ -210,8 +267,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             case android.R.id.home:
                 if (!mContactHasChanged) {
 
-                    // we will be displayed a dialog asking us to discard or keeping editing when we press back in case
-                    // we have not finished filling up some field
+                    /* we will be displayed a dialog asking us to discard or keeping editing when we press back in case
+                     we have not finished filling up some field */
 
                     NavUtils.navigateUpFromSameTask(EditorActivity.this);
                     return true;
@@ -236,7 +293,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     private boolean saveContact() {
 
-        // last step of this activity we have to create savecontact method
+        //  we have to create save contact method
 
         String name = mNameEditText.getText().toString().trim();
         String email = mEmailEditText.getText().toString().trim();
@@ -247,12 +304,13 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         if (mCurrentContactUri == null && TextUtils.isEmpty(name)
         && TextUtils.isEmpty(email) && TextUtils.isEmpty(phone) && mType == Contract.ContactEntry.TYPEOFCONTACT_PERSONAL && mPhotoUri == null) {
 
-            hasAllRequiredValues = true;
+            hasAllRequiredValues = true; /* các trường thiếu thông tin */
             return hasAllRequiredValues;
 
         }
 
-        ContentValues values = new ContentValues();
+        ContentValues values = new ContentValues(); /* values để lưu các giá trị dùng cho thêm vào database sau đó , sử dụng
+                                                        dạng key-values thêm vào db tiện hơn các công cụ khác*/
 
         if (TextUtils.isEmpty(name)) {
             Toast.makeText(this, "Name is Required", Toast.LENGTH_SHORT).show();
@@ -317,7 +375,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     }
 
-
+    /* Loader được dùng để truy xuất tới content provider*/
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
@@ -493,5 +551,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // Show dialog that there are unsaved changes
         showUnsavedChangesDialog(discardButtonClickListener);
     }
+
 }
 

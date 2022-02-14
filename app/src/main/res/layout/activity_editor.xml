@@ -8,73 +8,100 @@
 
 
     <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profile_image"
         android:layout_width="220dp"
         android:layout_height="220dp"
-        android:layout_marginTop="40dp"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
+        android:layout_marginTop="40dp"
         android:src="@drawable/photo" />
 
 
-
-
     <TextView
+        android:id="@+id/textHint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_image"
         android:layout_centerInParent="true"
         android:layout_marginTop="4dp"
-        android:textSize="15sp"
-        android:id="@+id/textHint"
         android:text="Tap to Add an Image"
-        android:textStyle="bold"
-        android:layout_below="@+id/profile_image" />
+        android:textSize="15sp"
+        android:textStyle="bold" />
 
 
     <EditText
+        android:id="@+id/nameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/nameEditText"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="50dp"
         android:layout_below="@+id/textHint"
         android:layout_centerInParent="true"
-        android:hint="Name"/>
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="50dp"
+        android:hint="Name" />
 
 
     <EditText
+        android:id="@+id/phoneEditText"
         android:layout_width="135dp"
         android:layout_height="wrap_content"
-        android:id="@+id/phoneEditText"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="50dp"
         android:layout_below="@+id/nameEditText"
-        android:inputType="number"
-        android:hint="Phone Number"/>
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="30dp"
+        android:hint="Phone Number"
+        android:inputType="number" />
 
     <Spinner
+        android:id="@+id/spinner"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/nameEditText"
         android:layout_marginTop="50dp"
         android:layout_marginRight="50dp"
-        android:layout_below="@+id/nameEditText"
-        android:layout_toRightOf="@+id/phoneEditText"
-        android:id="@+id/spinner"/>
+        android:layout_toRightOf="@+id/phoneEditText" />
 
 
     <EditText
+        android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/emailEditText"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="50dp"
         android:layout_below="@+id/phoneEditText"
         android:layout_centerInParent="true"
-        android:hint="Email"/>
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="50dp"
+        android:hint="Email" />
+
+    <ImageView
+        android:id="@+id/call"
+        android:layout_width="70dp"
+        android:layout_height="70sp"
+        android:layout_below="@id/emailEditText"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="30dp"
+        app:srcCompat="@drawable/ic_baseline_phone_24" />
+
+    <ImageView
+        android:id="@+id/message"
+        android:layout_width="70dp"
+        android:layout_height="70sp"
+        android:layout_below="@id/emailEditText"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="31dp"
+
+        android:layout_toRightOf="@id/call"
+        app:srcCompat="@drawable/ic_message" />
+
+    <ImageView
+        android:id="@+id/email"
+        android:layout_width="70dp"
+        android:layout_height="70sp"
+        android:layout_below="@id/emailEditText"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="26dp"
+        android:layout_toRightOf="@id/message"
+        app:srcCompat="@drawable/ic_email_red" />
 
 
 </RelativeLayout>
